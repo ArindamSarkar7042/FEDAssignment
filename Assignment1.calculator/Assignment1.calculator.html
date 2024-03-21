@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 1000px;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <script>
+        // JavaScript Calculator
+        // Creating container div
+        var calculatorContainer = document.createElement('div');
+        calculatorContainer.id = 'calculator-container';
+        calculatorContainer.style.border = '1px solid #ccc';
+        calculatorContainer.style.borderRadius = '20px';
+        calculatorContainer.style.padding = '50px';
+        calculatorContainer.style.boxShadow = '  0 20px rgba(0, 0, 0, 0.1)';
+        calculatorContainer.style.backgroundColor = '#fff';
+        document.body.appendChild(calculatorContainer);
+
+        // Creating input 
+        var inputField = document.createElement('input');
+        inputField.id = 'result';
+        inputField.type = 'text';
+        inputField.readOnly = true;
+        inputField.style.width = '200px';
+        inputField.style.fontSize = '38px';
+        inputField.style.height="48px"
+        calculatorContainer.appendChild(inputField);
+
+        // Creating buttons
+        var buttonLayout = [
+            ['1', '2', '3', '+'],
+            ['4', '5', '6', '-'],
+            ['7', '8', '9', '*'],
+            ['0', '.', '=', '/'],
+            ['C', 'Del']
+        ];
+
+        buttonLayout.forEach(row => {
+            var div = document.createElement('div');
+            div.style.display = 'flex';
+
+            row.forEach(value => {
+                var button = document.createElement('button');
+                button.textContent = value;
+                button.style.width = '50px';
+                button.style.height = '59px';
+                button.style.fontSize = '26px';
+                button.style.margin = '10px';
+
+                button.addEventListener('click', function() {
+                    buttonClick(value);
+                });
+
+                div.appendChild(button);
+            });
+
+            calculatorContainer.appendChild(div);
+        });
+
+        function buttonClick(value) {
+            if (value === '=') {
+                calculate();
+            } else if (value === 'C') {
+                clearInput();
+            } else if (value === 'Del') {
+                deleteLast();
+            } else {
+                appendValue(value);
+            }
+        }
+        
+        function calculate() {
+            
+                var result = evaluateExpression(inputField.value);
+                inputField.value = result;
+
+        }
+
+        function evaluateExpression(expression) {
+            return Function('"use strict";return (' + expression + ')')();
+        }
+
+        function appendValue(value) {
+            inputField.value += value;
+        }
+
+        function clearInput() {
+            inputField.value = '';
+        }
+
+        function deleteLast() {
+            var currentValue = inputField.value;
+            inputField.value = currentValue.substring(0, currentValue.length - 1);
+        }
+
+        // keyboard inputs
+        document.addEventListener('keydown', function(event) {
+            const key = event.key;
+            if (key.match(/[0-9+\-*/.=]|Enter|/)) {
+                event.preventDefault();
+                if (key === 'Enter') {
+                    calculate();
+                } else if (key === 'Backspace' || key === 'Delete') {
+                    deleteLast();
+                } else {
+                    appendValue(key);
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
